@@ -12,7 +12,7 @@ public class TweetSubscriber implements Flow.Subscriber<Status> {
 
     private final String id = UUID.randomUUID().toString();
     private Flow.Subscription subscription;
-    private static final int SUB_REQ=1;
+    private static final int SUB_REQ=5;
     private static final int SLEEP=1000;
     @Inject
     private Logger logger ;
@@ -32,18 +32,19 @@ public class TweetSubscriber implements Flow.Subscriber<Status> {
            logger.log(Level.SEVERE,"An error has occured: {}", e);
         }
         Tweet t = new Tweet(status.getUser().getScreenName(), status.getText(), status.getCreatedAt());
-        logger.info("New Tweet: --->");
-        System.out.println(t.toString());
+        logger.info(t.toString());
         subscription.request(SUB_REQ);
     }
 
     @Override
     public void onError(Throwable throwable) {
-        logger.log(Level.SEVERE, "An error occured: {}", throwable);
+        logger.log(Level.SEVERE, "An error occured", throwable);
+
     }
 
     @Override
     public void onComplete() {
         logger.info("Done!");
+
     }
 }

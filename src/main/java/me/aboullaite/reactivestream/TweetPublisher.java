@@ -60,7 +60,7 @@ public class TweetPublisher implements Flow.Publisher {
         twitter = tf.getInstance();
     }
 
-    public void getTweets(){
+    public void getTweets() throws Exception{
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(CORE_POOL_SIZE);
         Runnable tweets = () -> {
             try {
@@ -72,7 +72,10 @@ public class TweetPublisher implements Flow.Publisher {
                             sb.submit(status);
                         });
             } catch (TwitterException e) {
-                logger.log(Level.SEVERE, "AN error occured while fetching tweets: {}", e);
+                logger.log(Level.SEVERE, "AN error occured while fetching tweets");
+                // close stream
+                sb.closeExceptionally(e);
+
             }
         };
         executor.scheduleWithFixedDelay(tweets, INITIAL_DELAY, DELAY, TimeUnit.SECONDS);
